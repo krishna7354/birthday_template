@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise</title>
+  <meta name="description" content="A special birthday surprise for someone you care about.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       BACKGROUND AUDIO
+  ══════════════════════════════════════ -->
+  <audio id="birthdaySong" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <button class="music-toggle glass-card" id="musicToggle" type="button" onclick="toggleMusic()" aria-label="Toggle background music">
+    <span class="music-toggle-icon" id="musicToggleIcon">♪</span>
+    <span id="musicToggleText">Play song</span>
+  </button>
+
+  <!-- ══════════════════════════════════════
+       STEP 1 — INTRO SCREEN
+  ══════════════════════════════════════ -->
+  <div id="step1">
+
+    <!-- Decorative glow blobs -->
+    <div class="intro-bg-shape" style="width:600px;height:600px;top:-200px;right:-150px;"></div>
+    <div class="intro-bg-shape" style="width:500px;height:500px;bottom:-180px;left:-120px;background:radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 70%);"></div>
+    <div class="ambient-grid" aria-hidden="true"></div>
+
+    <!-- Petals injected by JS -->
+
+    <div class="intro-panel glass-card" style="text-align:center;position:relative;z-index:10;" id="intro-content">
+      <p class="intro-kicker">A birthday page made with love</p>
+      <!-- Small emoji hearts that drift in -->
+      <div style="font-size:2.5rem;margin-bottom:20px;opacity:0;" id="intro-emoji">🌸</div>
+      <h1 class="intro-title" id="intro-title" style="opacity:0;">Hello, [Name]...</h1>
+      <p class="intro-subtitle" id="intro-sub" style="opacity:0;">There's something here just for you</p>
+
+      <div style="opacity:0;" id="intro-btn-wrap">
+        <button class="open-btn" id="openBtn" onclick="startExperience()">
+          <div class="btn-shimmer"></div>
+          <span class="btn-icon">💌</span>
+          <span>Open</span>
+        </button>
+      </div>
+
+      <!-- Floating tiny hearts around the button -->
+      <div id="mini-hearts" style="position:relative;height:0;overflow:visible;pointer-events:none;"></div>
+      <div class="intro-meta" aria-hidden="true">
+        <span>Soft animations</span>
+        <span>Music</span>
+        <span>Photo memories</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       STEP 2 — MESSAGE CARD
+  ══════════════════════════════════════ -->
+  <div id="step2" class="hidden-section">
+
+    <!-- Floating hearts decoration -->
+    <div id="msg-hearts" style="position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;"></div>
+
+    <div class="message-card glass-card" style="position:relative;z-index:2;">
+      <div class="message-orb message-orb-one" aria-hidden="true"></div>
+      <div class="message-orb message-orb-two" aria-hidden="true"></div>
+      <div style="text-align:center;margin-bottom:4px;font-size:2rem;">🎀</div>
+      <h2>A Message for You</h2>
+
+      <div class="message-body" id="msg-body" style="opacity:0;transform:translateY(20px);">
+        <p>
+          <strong>Happy Birthday, [Name]! 🎉✨</strong>
+        </p>
+        <br>
+        <p>
+          [Add your personal birthday message here.]
+        </p>
+        <br>
+        <p>
+          Wishing you happiness, success, good health, and everything you've been hoping for. Keep smiling and shining!
+        </p>
+        <br>
+        <p style="color:var(--rose);font-style:italic;font-weight:500;">
+          Wishing you a fantastic birthday and an even more amazing year ahead! 🎂🥳🎈
+        </p>
+      </div>
+
+      <div style="text-align:center;opacity:0;" id="continue-wrap">
+        <button class="continue-btn" onclick="showFinalSurprise()">
+          <span>Continue to the Surprise</span>
+          <span>✨</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       STEP 3 — FINALE
+  ══════════════════════════════════════ -->
+  <main id="step3" class="hidden-section" style="display:none !important;">
+
+    <!-- Collage background -->
+    <div class="collage-bg" id="collageBg">
+      <img src="images/bg1.jpeg" alt="">
+      <img src="images/bg2.jpeg" alt="">
+      <img src="images/bg3.jpeg" alt="">
+      <img src="images/bg4.jpeg" alt="">
+      <img src="images/col1.jpeg" alt="">
+      <img src="images/col2.jpeg" alt="">
+      <img src="images/col4.jpeg" alt="">
+      <img src="images/col3.jpeg" alt="">
+      <img src="images/col5.jpeg" alt="">
+      <img src="images/main.jpeg" alt="">
+      <img src="images/bg1.jpeg" alt="">
+      <img src="images/bg2.jpeg" alt="">
+      <img src="images/col1.jpeg" alt="">
+      <img src="images/col2.jpeg" alt="">
+      <img src="images/bg3.jpeg" alt="">
+    </div>
+
+    <!-- Corner floating photos -->
+    <img src="images/bg1.jpeg"   class="corner-photo" id="cp1" style="top:4%;left:2%;"   alt="">
+    <img src="images/bg2.jpeg"   class="corner-photo" id="cp2" style="bottom:6%;left:4%;" alt="">
+    <img src="images/bg3.jpeg"   class="corner-photo" id="cp3" style="top:4%;right:2%;"  alt="">
+    <img src="images/col1.jpeg" class="corner-photo" id="cp4" style="bottom:6%;right:4%;" alt="">
+
+    <!-- ── Hero Section ── -->
+    <section class="finale-hero">
+      <div class="hero-badge">The birthday finale</div>
+
+      <!-- Animated photo ring -->
+      <div class="photo-ring" id="heroRing" style="opacity:0;transform:scale(0.7);">
+        <img src="images/main.jpeg" alt="Birthday person" id="heroPhoto">
+      </div>
+
+      <!-- Animated letter-by-letter banner -->
+      <div class="banner-line" id="bannerLine" aria-label="Happy Birthday!">
+        <!-- Letters injected by JS -->
+      </div>
+
+      <p class="subtitle-date" id="subtitleDate" style="opacity:0;">
+        [Name] &nbsp;•&nbsp; [Date]
+      </p>
+
+      <!-- Candles -->
+      <div class="candle-row" id="candleRow" style="opacity:0;">
+        <div class="candle"><div class="candle-wick"></div><div class="flame"><div class="flame-inner"></div></div></div>
+        <div class="candle"><div class="candle-wick"></div><div class="flame"><div class="flame-inner"></div></div></div>
+        <div class="candle"><div class="candle-wick"></div><div class="flame"><div class="flame-inner"></div></div></div>
+        <div class="candle"><div class="candle-wick"></div><div class="flame"><div class="flame-inner"></div></div></div>
+        <div class="candle"><div class="candle-wick"></div><div class="flame"><div class="flame-inner"></div></div></div>
+      </div>
+
+      <div class="wish-strip" id="wishStrip" style="opacity:0;">
+        <span class="wish-chip">More laughter</span>
+        <span class="wish-chip">More wins</span>
+        <span class="wish-chip">More beautiful memories</span>
+      </div>
+
+      <!-- Scroll hint -->
+      <div id="scrollHint" style="margin-top:48px;opacity:0;text-align:center;">
+        <p style="font-size:0.8rem;letter-spacing:0.18em;color:#c4849e;text-transform:uppercase;margin-bottom:8px;">scroll for more</p>
+        <div style="width:2px;height:36px;background:linear-gradient(to bottom,var(--rose-light),transparent);margin:0 auto;border-radius:1px;animation:scrollPulse 1.6s ease-in-out infinite;"></div>
+      </div>
+    </section>
+
+    <!-- ── Photo Wall ── -->
+    <section class="memory-section" style="background:linear-gradient(180deg,transparent,rgba(255,232,235,0.6));padding-top:0;">
+      <h3 style="font-family:'Dancing Script',cursive;font-size:2.4rem;color:var(--rose);text-align:center;padding-top:40px;margin-bottom:8px;">
+        Memories ✨
+      </h3>
+      <p style="text-align:center;color:#c4849e;font-size:0.85rem;letter-spacing:0.1em;margin-bottom:24px;">hover over each one</p>
+
+      <div class="photo-wall" id="photoWall">
+        <div class="polaroid" style="transform:rotate(-4deg)">
+          <img src="images/bg1.jpeg" alt="Memory">
+          <div class="polaroid-label">Days like these 🌸</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(3deg)">
+          <img src="images/bg2.jpeg" alt="Memory">
+          <div class="polaroid-label">Beautiful soul ✨</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(-2deg)">
+          <img src="images/col1.jpeg" alt="Memory">
+          <div class="polaroid-label">Always radiant 💫</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(5deg)">
+          <img src="images/col2.jpeg" alt="Memory">
+          <div class="polaroid-label">Pure energy 🔥</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(-3deg)">
+          <img src="images/col3.jpeg" alt="Memory">
+          <div class="polaroid-label">One of a kind 💖</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(2deg)">
+          <img src="images/col4.jpeg" alt="Memory">
+          <div class="polaroid-label">Best smile ever 😊</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(-5deg)">
+          <img src="images/col5.jpeg" alt="Memory">
+          <div class="polaroid-label">Unforgettable 🌹</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(4deg)">
+          <img src="images/bg3.jpeg" alt="Memory">
+          <div class="polaroid-label">So lovely 🌷</div>
+        </div>
+        <div class="polaroid" style="transform:rotate(-1deg)">
+          <img src="images/bg4.jpeg" alt="Memory">
+          <div class="polaroid-label">Always you 💕</div>
+        </div>
+      </div>
+
+      <!-- Final footer message -->
+      <div style="text-align:center;padding:48px 20px 80px;">
+        <p style="font-family:'Dancing Script',cursive;font-size:2rem;color:var(--rose);margin-bottom:8px;">
+          To someone truly special 🌹
+        </p>
+        <p style="font-size:0.85rem;color:#c4849e;letter-spacing:0.1em;">Happy Birthday, [Name] • [Year]</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+       SCRIPT
+  ══════════════════════════════════════ -->
+  <script>
+  /* ─── CONFIG ─────────────────────────────── */
+  const PETAL_EMOJIS = ['🌸','🌺','✨','💮','🌼'];
+  const BANNER_TEXT  = 'Happy Birthday!';
+
+  /* ─── INTRO ENTRANCE ─────────────────────── */
+  window.addEventListener('DOMContentLoaded', () => {
+    // Staggered entrance
+    gsap.timeline()
+      .to('#intro-emoji',   { opacity: 1, y: -8, duration: 0.9,  ease: 'back.out(2)',   delay: 0.3 })
+      .to('#intro-title',   { opacity: 1, y: 0,  duration: 1.1,  ease: 'power3.out' },  '-=0.5')
+      .to('#intro-sub',     { opacity: 1, y: 0,  duration: 0.8,  ease: 'power2.out' },  '-=0.7')
+      .to('#intro-btn-wrap',{ opacity: 1, y: 0,  duration: 0.9,  ease: 'back.out(2)' }, '-=0.5');
+
+    // Launch falling petals on intro
+    launchPetals(document.getElementById('step1'), 18, true);
+
+    // Build banner letters (hidden until step3)
+    buildBanner();
+    createMiniHearts();
+    initTiltCards();
+    syncMusicButton();
+  });
+
+  function toggleMusic() {
+    const song = document.getElementById('birthdaySong');
+    if (!song) return;
+
+    if (song.paused) {
+      song.play().then(syncMusicButton).catch(syncMusicButton);
+      return;
+    }
+
+    song.pause();
+    syncMusicButton();
+  }
+
+  function syncMusicButton() {
+    const song = document.getElementById('birthdaySong');
+    const text = document.getElementById('musicToggleText');
+    const icon = document.getElementById('musicToggleIcon');
+    const toggle = document.getElementById('musicToggle');
+    if (!song || !text || !icon || !toggle) return;
+
+    const playing = !song.paused;
+    text.textContent = playing ? 'Pause song' : 'Play song';
+    icon.textContent = playing ? '♫' : '♪';
+    toggle.classList.toggle('is-playing', playing);
+  }
+
+  function createMiniHearts() {
+    const container = document.getElementById('mini-hearts');
+    if (!container) return;
+
+    const items = [
+      { left: '16%', delay: '0s', size: '0.95rem' },
+      { left: '32%', delay: '0.8s', size: '0.8rem' },
+      { left: '72%', delay: '0.4s', size: '0.9rem' },
+      { left: '84%', delay: '1.2s', size: '0.78rem' }
+    ];
+
+    items.forEach(({ left, delay, size }) => {
+      const heart = document.createElement('span');
+      heart.className = 'mini-heart';
+      heart.textContent = '+';
+      heart.style.left = left;
+      heart.style.animationDelay = delay;
+      heart.style.fontSize = size;
+      container.appendChild(heart);
+    });
+  }
+
+  function initTiltCards() {
+    document.querySelectorAll('.polaroid').forEach(card => {
+      card.addEventListener('mousemove', event => {
+        const bounds = card.getBoundingClientRect();
+        const offsetX = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const offsetY = (event.clientY - bounds.top) / bounds.height - 0.5;
+        card.style.setProperty('--tilt-x', `${offsetY * -8}deg`);
+        card.style.setProperty('--tilt-y', `${offsetX * 10}deg`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.removeProperty('--tilt-x');
+        card.style.removeProperty('--tilt-y');
+      });
+    });
+  }
+
+  /* ─── PETAL FACTORY ──────────────────────── */
+  function launchPetals(container, count, continuous) {
+    if (!container) return;
+    const go = () => {
+      const el = document.createElement('div');
+      el.className = 'petal';
+      el.textContent = PETAL_EMOJIS[Math.floor(Math.random() * PETAL_EMOJIS.length)];
+      el.style.left   = Math.random() * 100 + 'vw';
+      el.style.top    = '-60px';
+      el.style.fontSize = (1 + Math.random()) + 'rem';
+      const dur = 5 + Math.random() * 6;
+      el.style.animationDuration  = dur + 's';
+      el.style.animationDelay     = Math.random() * -dur + 's';
+      container.appendChild(el);
+      if (!continuous) setTimeout(() => el.remove(), (dur + 1) * 1000);
+    };
+    for (let i = 0; i < count; i++) go();
+    if (continuous) setInterval(go, 700);
+  }
+
+  /* ─── STEP 1 → STEP 2 ────────────────────── */
+  function startExperience() {
+    gsap.to('#step1', {
+      opacity: 0, scale: 0.96, duration: 0.9, ease: 'power3.in',
+      onComplete() {
+        document.getElementById('step1').style.display = 'none';
+        const s2 = document.getElementById('step2');
+        s2.classList.remove('hidden-section');
+        s2.style.display = 'flex';
+        enterStep2();
+      }
+    });
+  }
+
+  function enterStep2() {
+    const s2 = document.getElementById('step2');
+    gsap.from(s2, { opacity: 0, duration: 0.1 });
+    gsap.to(s2, { opacity: 1, duration: 0.8 });
+
+    // Message body slides in
+    gsap.to('#msg-body', { opacity: 1, y: 0, duration: 0.9, delay: 0.4, ease: 'power3.out' });
+
+    // Continue button fades
+    gsap.to('#continue-wrap', { opacity: 1, duration: 0.8, delay: 0.9, ease: 'power2.out' });
+
+    // Floating hearts in background
+    const hContainer = document.getElementById('msg-hearts');
+    const heartEmojis = ['💕','💖','💗','💓','🌹','✨'];
+    const spawnHeart = () => {
+      const h = document.createElement('div');
+      h.style.cssText = `
+        position:absolute;
+        left:${Math.random()*100}%;
+        bottom:-40px;
+        font-size:${1.2 + Math.random()*1.2}rem;
+        opacity:0;
+        pointer-events:none;
+        user-select:none;
+      `;
+      h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+      hContainer.appendChild(h);
+      gsap.to(h, {
+        y: -(250 + Math.random()*350),
+        x: (Math.random()-0.5)*120,
+        opacity: 0.7,
+        duration: 4 + Math.random()*3,
+        ease: 'power1.out',
+        onComplete: () => h.remove()
+      });
+    };
+    const hInterval = setInterval(spawnHeart, 600);
+    document.getElementById('step2').dataset.hInterval = hInterval;
+  }
+
+  /* ─── STEP 2 → STEP 3 ────────────────────── */
+  function showFinalSurprise() {
+    // Stop heart interval
+    const hInterval = document.getElementById('step2').dataset.hInterval;
+    if (hInterval) clearInterval(hInterval);
+
+    document.getElementById('birthdaySong').play().catch(() => {});
+    syncMusicButton();
+
+    gsap.to('#step2', {
+      opacity: 0, scale: 0.92, duration: 0.9, ease: 'power3.in',
+      onComplete() {
+        document.getElementById('step2').style.display = 'none';
+        const s3 = document.getElementById('step3');
+        s3.classList.remove('hidden-section');
+        s3.style.removeProperty('display');
+        s3.style.display = 'block';
+        gsap.from(s3, { opacity: 0, duration: 0.1 });
+        gsap.to(s3, { opacity: 1, duration: 0.6 });
+        runMagic();
+      }
+    });
+  }
+
+  /* ─── BUILD BANNER ───────────────────────── */
+  function buildBanner() {
+    const line = document.getElementById('bannerLine');
+    BANNER_TEXT.split('').forEach(ch => {
+      const span = document.createElement('span');
+      span.className = 'banner-char';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      line.appendChild(span);
+    });
+  }
+
+  /* ─── FINALE MAGIC ───────────────────────── */
+  function runMagic() {
+    const tl = gsap.timeline();
+
+    // Photo ring entrance
+    tl.to('#heroRing', {
+      opacity: 1, scale: 1, duration: 1.2,
+      ease: 'elastic.out(1, 0.6)'
+    });
+
+    // Animate each letter
+    tl.to('.banner-char', {
+      opacity: 1, y: 0, scale: 1, rotation: 0,
+      duration: 0.6, stagger: 0.06,
+      ease: 'back.out(2)'
+    }, '-=0.4');
+
+    // Subtitle & candles
+    tl.to('#subtitleDate', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.3')
+      .to('#candleRow',    { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.5)' }, '-=0.4')
+      .to('#wishStrip',    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.25')
+      .to('#scrollHint',   { opacity: 1, duration: 0.6 }, '-=0.1');
+
+    // Corner photos
+    const corners = ['#cp1','#cp2','#cp3','#cp4'];
+    corners.forEach((id, i) => {
+      const el = document.querySelector(id);
+      if (!el) return;
+      el.style.opacity = '1';
+      gsap.from(id, {
+        scale: 0, rotation: (i % 2 === 0 ? -12 : 12), opacity: 0,
+        duration: 1.3, delay: 0.8 + i * 0.15,
+        ease: 'elastic.out(1, 0.55)'
+      });
+      moveRandomly(id);
+    });
+
+    // Polaroids stagger in
+    gsap.from('.polaroid', {
+      opacity: 0, y: 60, scale: 0.85,
+      duration: 0.8, stagger: 0.1,
+      delay: 1.2, ease: 'power3.out',
+      scrollTrigger: null
+    });
+
+    // Confetti burst (20 s)
+    launchConfetti(20);
+
+    // Heart balloons rise gently through the finale
+    createBalloon();
+    setInterval(createBalloon, 2200);
+
+    // Sparkle dots
+    spawnSparkles(12);
+
+    // Continuous petals for finale
+    launchPetals(document.getElementById('step3'), 12, false);
+    setInterval(() => launchPetals(document.getElementById('step3'), 3, false), 2000);
+  }
+
+  /* ─── CONFETTI ───────────────────────────── */
+  function launchConfetti(seconds) {
+    const end = Date.now() + seconds * 1000;
+    const colors = ['#f43f5e','#fb7185','#f59e0b','#ffffff','#fda4af'];
+    (function frame() {
+      confetti({ particleCount: 5, angle: 60,  spread: 65, origin: { x: 0,   y: 0.72 }, colors });
+      confetti({ particleCount: 5, angle: 120, spread: 65, origin: { x: 1,   y: 0.72 }, colors });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    }());
+  }
+
+  /* ─── BALLOON FACTORY ────────────────────── */
+  function createBalloon() {
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    b.textContent = '♥';
+    b.style.left = Math.random() * 96 + 'vw';
+    const string = document.createElement('span');
+    string.className = 'balloon-string';
+    b.appendChild(string);
+    document.getElementById('step3').appendChild(b);
+    gsap.to(b, {
+      y: -(window.innerHeight + 100),
+      x: `+=${(Math.random() - 0.5) * 80}`,
+      rotation: (Math.random() - 0.5) * 10,
+      duration: 14 + Math.random() * 5,
+      ease: 'sine.inOut',
+      onComplete: () => b.remove()
+    });
+  }
+
+  /* ─── FLOAT CORNER PHOTOS ────────────────── */
+  function moveRandomly(element) {
+    gsap.to(element, {
+      x: (Math.random() - 0.5) * 50,
+      y: (Math.random() - 0.5) * 50,
+      rotation: (Math.random() - 0.5) * 8,
+      duration: 4 + Math.random() * 3,
+      repeat: -1, yoyo: true,
+      ease: 'sine.inOut'
+    });
+  }
+
+  /* ─── SPARKLE DOTS ───────────────────────── */
+  function spawnSparkles(count) {
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top  = Math.random() * 100 + 'vh';
+      s.style.animationDelay = Math.random() * 2 + 's';
+      s.style.width  = (4 + Math.random() * 6) + 'px';
+      s.style.height = s.style.width;
+      const hue = [0, 30, 200, 270][Math.floor(Math.random() * 4)];
+      s.style.background = `hsl(${hue}, 90%, 70%)`;
+      s.style.boxShadow  = `0 0 8px hsl(${hue}, 90%, 70%)`;
+      document.body.appendChild(s);
+    }
+  }
+  </script>
+
+  <style>
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+      50%       { opacity: 1;   transform: scaleY(1);   }
+    }
+    /* ensure step3 becomes real block after removal of hidden-section */
+    #step3:not(.hidden-section) { display: block !important; }
+  </style>
+</body>
+</html>
