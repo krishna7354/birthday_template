@@ -61,4 +61,4 @@ If you want the smoothest experience, use a modern browser like Chrome, Edge, or
 
 ## Notes
 
-Replace the `[Name]`, `[Date]`, and `[Year]` placeholders and update the message, photos, and music to personalize the page.
+This birthday page has been personalized for Anshika and includes her birthday message, date, and celebration details.
